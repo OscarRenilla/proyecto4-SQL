@@ -34,9 +34,42 @@ WHERE passenger_name LIKE 'IRINA%';
 
 
 /* 6. Mostrar las ciudades con más de un aeropuerto. */
+SELECT
+	city,
+	COUNT(city) AS Aeropuertos
+FROM airports_data
+GROUP BY city
+HAVING COUNT(city) > 1;
+
 
 /* 7. Mostrar el número de vuelos por modelo de avión. */
+SELECT 
+	a.model AS modelo, 
+		COUNT(*) AS numero_vuelos
+FROM bookings.flights AS f
+INNER JOIN bookings.aircrafts_data AS a 
+	ON f.aircraft_code = a.aircraft_code
+GROUP BY a.model
+ORDER BY numero_vuelos DESC;
+
 
 /* 8. Reservas con más de un billete (varios pasajeros). */ 
+SELECT 
+	book_ref, 
+	COUNT(*) AS num_billetes
+FROM bookings.tickets
+GROUP BY book_ref
+HAVING COUNT(*) > 1
+ORDER BY num_billetes DESC;
+
 
 /* 9. Vuelos con retraso de salida superior a una hora. */
+SELECT 
+	flight_id, 
+	flight_no, 
+	scheduled_departure, 
+	actual_departure,
+    (actual_departure - scheduled_departure) AS retraso
+FROM bookings.flights
+WHERE actual_departure - scheduled_departure > INTERVAL '1 hour'
+ORDER BY retraso DESC;
